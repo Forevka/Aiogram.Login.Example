@@ -1,5 +1,4 @@
 import collections
-from fake_db import FakeRepo
 import hashlib
 import hmac
 
@@ -10,6 +9,7 @@ from fastapi.templating import Jinja2Templates
 from starlette.responses import Response
 
 from config import BOT_TOKEN, ENVIRONMENT
+from fake_db import FakeRepo
 from models import TelegramAuthModel
 
 app = FastAPI()
@@ -29,13 +29,16 @@ app.add_middleware(
 async def startup_event():
     ...
 
+
 def check_user_data(data: TelegramAuthModel, token):
     secret = hashlib.sha256()
     secret.update(token.encode('utf-8'))
     sorted_params = collections.OrderedDict(sorted(data.dict().items()))
-    msg = "\n".join(["{}={}".format(k, v) for k, v in sorted_params.items() if k != 'hash'])
+    msg = "\n".join(["{}={}".format(k, v)
+                    for k, v in sorted_params.items() if k != 'hash'])
 
     return data.hash == hmac.new(secret.digest(), msg.encode('utf-8'), digestmod=hashlib.sha256).hexdigest()
+
 
 async def login_route(request: Request, user: TelegramAuthModel = Depends()) -> Response:
     if (ENVIRONMENT.lower().strip() == "production"):
@@ -45,10 +48,11 @@ async def login_route(request: Request, user: TelegramAuthModel = Depends()) -> 
     user_from_database = FakeRepo().get_user(user.id)
 
     if (user_from_database["role_id"] == 2):
-        raise HTTPException(status_code=401, detail="Sorry you don't have permission")
+        raise HTTPException(
+            status_code=401, detail="Sorry you don't have permission")
 
     return templates.TemplateResponse("login.html", {
-        "request":request, 
+        "request": request,
         **user.dict()
     })
 

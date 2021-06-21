@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  bot_service:
+    build:
+      context: .
+    env_file:
+      - ./.env
+    command: ["python3", "bot.py"]
+  web_service:
+    build:
+      context: .
+    env_file:
+      - ./.env
+    command: ["uvicorn", "web:app", "--host", "0.0.0.0", "--port", "${internal_web_port}"]
+    ports:
+      - "80:${internal_web_port}"
