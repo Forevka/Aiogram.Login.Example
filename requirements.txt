@@ -1,1 +1,5 @@
 git+git://github.com/aiogram/aiogram/@dev-3.x
+fastapi
+uvicorn
+aiofiles
+jinja2
