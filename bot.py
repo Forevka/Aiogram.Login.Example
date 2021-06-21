@@ -1,5 +1,4 @@
 import logging
-from typing import List
 
 from aiogram import Bot, Dispatcher
 from aiogram.types import Message
@@ -32,14 +31,8 @@ async def cmd_login(message: Message) -> None:
     await message.answer("Here login button", reply_markup=login_markup)
 
 
-async def on_startup(dispatcher: Dispatcher, bots: List[Bot], bot: Bot, router: Dispatcher):
-    await bot.delete_webhook(True)
-
-
 def main() -> None:
     bot = Bot(BOT_TOKEN, parse_mode="HTML")
-
-    dp.startup.register(on_startup)
 
     dp.run_polling(bot)
 
