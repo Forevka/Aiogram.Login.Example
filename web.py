@@ -13,8 +13,6 @@ from fake_db import FakeRepo
 from models import TelegramAuthModel
 
 app = FastAPI()
-if (ENVIRONMENT != 'debug'):
-    app.root_path = '/api/auth_server/'
 
 app.add_middleware(
     CORSMiddleware,
